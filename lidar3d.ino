@@ -1,19 +1,19 @@
 #include <TinyStepper.h>
+#include <math.h>
 
-// Define Arduino Pin Outputs to to the ULN2003 Darlington Array to drive a 28BYJ-48 Stepper Motor
-#define IN1 PA0
-#define IN2 PA1
-#define IN3 PA4
-#define IN4 PA5
+// Define Pin Outputs to to the ULN2003 Darlington Array to drive a 28BYJ-48 Stepper Motor
+#define IN1 PB12
+#define IN2 PB13
+#define IN3 PB14
+#define IN4 PB15
 #define HALFSTEPS 4096  // Number of half-steps for a full rotation
 
 // Initialize the TinyStepper Class
 TinyStepper stepper(HALFSTEPS, IN1, IN2, IN3, IN4);
 
 int16_t i;
-int16_t pos = 0;    // variable to store the servo position
 String inputString;
-int16_t angle = 0;
+float angle = 0;
 char buffer[5100];
 
 
@@ -33,7 +33,7 @@ void loop() {
     }
     else if (inRange(inputString.indexOf("scan:"), 0, 254)) {
       uint16_t sAngle = inputString.substring(inputString.indexOf("scan:") + 5).toInt();
-      uint8_t stepSize = inputString.substring(inputString.lastIndexOf(":") + 1).toInt();
+      float stepSize = inputString.substring(inputString.lastIndexOf(":") + 1).toFloat();
       Serial.println("# starting scan");
       Serial2.print("b");
       delay(3000);
@@ -58,7 +58,7 @@ void loop() {
                   for (uint8_t idx = 0; idx < 6; idx++) {
                     uint16_t dst = (buffer[p + i + (idx * 6) + 7] << 8) + buffer[p + i + (idx * 6) + 6];
                     int16_t inc = (inc_idx + idx);
-                    int16_t c_az = angle;
+                    float c_az = angle;
 
                     Serial.print(c_az); Serial.print(", "); Serial.print(inc); Serial.print(", "); Serial.println(dst);
                   }
@@ -80,11 +80,12 @@ void loop() {
     }
 
     else {
-      angle = inputString.toInt();
+      float angle_ = inputString.toFloat();
+      //angle = inputString.toInt();
       inputString = "";
-      stepper.Move(angle, 5);
+      stepper.Move(angle_, 5);
       delay(500);
-      Serial.print("#Angle: "); Serial.println(angle);
+      Serial.print("#Angle: "); Serial.println(angle_);
     }
   }
 }
@@ -95,4 +96,3 @@ bool inRange(int val, int minimum, int maximum)
 {
   return ((minimum <= val) && (val <= maximum));
 }
-
