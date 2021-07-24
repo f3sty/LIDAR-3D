@@ -15,4 +15,6 @@ That is then fed into the Perl script to translate into cartesian coordinates an
 http://faculty.nps.edu/jenn/seminars/radarfundamentals.pdf
 https://en.wikipedia.org/wiki/Spherical_coordinate_system#Cartesian_coordinates
 
+![Blue pill cwontroller](/images/lidar_bluepill.png)
+
 ![Floorplan scan](/images/3d_floor.png)
